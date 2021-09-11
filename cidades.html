@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cidades</title>
+</head>
+<body>
+    
+
+    <select name="estado" id="estado" onchange="carregarCidades()">
+        <option disabled selected>Selecione um estado</option>
+        <option disabled>---</option>
+    </select>
+    <select name="cidade" id="cidade"></select>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(() => {
+            $.get('https://brasilapi.com.br/api/ibge/uf/v1')
+                .done(response => {
+                    response.forEach(estado => {
+                        $('#estado').append($('<option>', {
+                            value: estado.sigla,
+                            text: estado.nome
+                        }))
+                    })
+                })
+        })
+
+        function carregarCidades() {
+            const uf = $('#estado').val()
+            $.get(`https://brasilapi.com.br/api/ibge/municipios/v1/${uf}`)
+                .done(response => {
+                    $('#cidade').empty()
+                    response.forEach(cidade => {
+                        $('#cidade').append($('<option>', {
+                            value: cidade.nome,
+                            text: cidade.nome
+                        }))
+                    });
+                })
+        }
+    </script>
+
+
+</body>
+</html>
